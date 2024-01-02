@@ -5,6 +5,8 @@ namespace Cdr\ApiTester;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestAssertionsTrait;
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase as BaseTestCase;
 use JsonSerializable;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -410,6 +412,45 @@ class ApiTestCase extends BaseTestCase
         file_put_contents($expectedFile, Yaml::dump($actual));
         $this->addWarning('Overwriting test data ... , you are doing the inverse of an assertion, are you sure ?');
         $this->markAsRisky();
+    }
+
+    private function overwriteSwaggerOA3Spec(string $fileName): void
+    {
+        if (!str_starts_with($fileName, 'tmp-')) {
+            $this->addWarning('Overwriting test yaml doc data ... , you are doing the inverse of an assertion, are you sure ?');
+            $this->markAsRisky();
+        }
+
+        $kernel = static::$kernel;
+        $application = new Application($kernel);
+
+        $command = $application->find('api:openapi:export');
+        $commandTester = new CommandTester($command);
+        $commandTester->execute([
+            '--yaml' => true,
+            '--output' => $fileName,
+        ]);
+    }
+
+    private function generateActualSwaggerOA3Spec(): string
+    {
+        $tmpFile = 'tmp-' . microtime(true) . '-' . rand(0, 1000000) . '.yaml';
+        $this->overwriteSwaggerOA3Spec(__DIR__ . '/' . $tmpFile);
+        $yaml = Yaml::parseFile(__DIR__ . '/' . $tmpFile);
+        unlink(__DIR__ . '/' . $tmpFile);
+
+        return Yaml::dump($yaml);
+    }
+
+    public function assertSwaggerOA3Spec(string $expectedSwaggerOA3File): void
+    {
+        $this->assertYamlContent($expectedSwaggerOA3File, $this->generateActualSwaggerOA3Spec());
+    }
+
+    public function overwriteDoc(string $fileName): void
+    {
+        $this->overwriteSwaggerOA3Spec($fileName);
+        $this->assertYamlContent($fileName, $this->generateActualSwaggerOA3Spec());
     }
 
     private function addWarning(?string $message = null): void
