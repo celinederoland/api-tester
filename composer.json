@@ -1,0 +1,72 @@
+{
+  "name": "cdr/api-tester",
+  "description": "Test your api platform application",
+  "type": "library",
+  "keywords": [
+    "REST",
+    "GraphQL",
+    "API",
+    "JSON-LD",
+    "Hydra",
+    "JSONAPI",
+    "OpenAPI",
+    "HAL",
+    "Swagger",
+    "Api-Platform",
+    "Tests"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Céline de Roland",
+      "email": "celinederoland@itpassion.info"
+    }
+  ],
+  "require": {
+    "php": ">=8.1",
+    "api-platform/core": "3.2.*",
+    "phpspec/prophecy": "~1.0",
+    "phpunit/phpunit": "^10.1",
+    "symfony/browser-kit": "^7.0",
+    "symfony/framework-bundle": "^6.4 || ^7.0",
+    "symfony/http-client": "^7.0",
+    "symfony/http-foundation": "^6.4 || ^7.0",
+    "symfony/http-kernel": "^6.4 || ^7.0",
+    "symfony/property-access": "^6.4 || ^7.0",
+    "symfony/property-info": "^6.4 || ^7.0",
+    "symfony/serializer": "^6.4 || ^7.0",
+    "symfony/translation-contracts": "^3.3",
+    "symfony/web-link": "^6.4 || ^7.0",
+    "symfony/yaml": "^6.4 || ^7.0"
+  },
+  "require-dev": {
+    "phpspec/prophecy-phpunit": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "Cdr\\ApiTester\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Cdr\\ApiTester\\Tests\\": "tests/"
+    }
+  },
+  "config": {
+    "preferred-install": {
+      "*": "dist"
+    },
+    "sort-packages": true,
+    "allow-plugins": {
+      "composer/package-versions-deprecated": true
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-main": "1.0.x-dev"
+    },
+    "symfony": {
+      "require": "^6.4 || ^7.0"
+    }
+  }
+}
